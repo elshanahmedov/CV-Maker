@@ -5,6 +5,7 @@ const path = require("path");
 const connectDB = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
 const textEnhancerRoutes = require("./routes/textEnhancerRoutes");
+const projectRoutes = require("./routes/projectRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,6 +13,8 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
+
+app.use("/api/projects", projectRoutes);
 
 app.use(
   cors({

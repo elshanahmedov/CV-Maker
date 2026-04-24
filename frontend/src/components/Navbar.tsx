@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FileText, Menu, X, User, LogOut, Sparkles } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FileText, Menu, X, User, LogOut, Sparkles } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,9 +11,9 @@ const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'Templates', path: '/templates' },
-    { name: 'About Us', path: '/about' },
+    { name: "Home", path: "/" },
+    { name: "Templates", path: "/templates" },
+    { name: "About Us", path: "/about" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -21,7 +21,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setIsProfileOpen(false);
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -31,9 +31,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
             <FileText className="w-8 h-8 text-white" />
-            <span className="text-2xl font-bold text-white">
-              CWIX
-            </span>
+            <span className="text-2xl font-bold text-white">CV-MAKER</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -44,8 +42,8 @@ const Navbar = () => {
                 to={item.path}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   isActive(item.path)
-                    ? 'text-blue-200 bg-blue-800'
-                    : 'text-white hover:text-blue-200 hover:bg-blue-800'
+                    ? "text-blue-200 bg-blue-800"
+                    : "text-white hover:text-blue-200 hover:bg-blue-800"
                 }`}
               >
                 {item.name}
@@ -64,7 +62,7 @@ const Navbar = () => {
                   <User className="w-5 h-5" />
                   <span className="text-sm font-medium">{user?.name}</span>
                 </button>
-                
+
                 {isProfileOpen && (
                   <div className="absolute right-0 z-50 py-1 mt-2 w-48 bg-white rounded-md shadow-lg">
                     <div className="px-4 py-2 text-sm text-gray-700 border-b">
@@ -105,7 +103,11 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 text-white rounded-md transition-colors hover:text-blue-200 hover:bg-blue-800"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -121,8 +123,8 @@ const Navbar = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className={`px-3 py-2 rounded-md text-base font-medium transition-colors ${
                     isActive(item.path)
-                      ? 'text-blue-200 bg-blue-800'
-                      : 'text-white hover:text-blue-200 hover:bg-blue-800'
+                      ? "text-blue-200 bg-blue-800"
+                      : "text-white hover:text-blue-200 hover:bg-blue-800"
                   }`}
                 >
                   {item.name}
