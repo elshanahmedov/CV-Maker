@@ -1,23 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { FileText, Download, Palette, Zap, ArrowRight } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { FileText, Download, Palette, Zap, ArrowRight } from "lucide-react";
 
 const Home = () => {
   const features = [
     {
       icon: <Palette className="w-6 h-6" />,
-      title: 'Professional Templates',
-      description: 'Choose from dozens of beautifully designed resume templates crafted by professionals.',
+      title: "Professional Templates",
+      description:
+        "Choose from dozens of beautifully designed resume templates crafted by professionals.",
     },
     {
       icon: <Zap className="w-6 h-6" />,
-      title: 'Easy Customization',
-      description: 'Customize colors, fonts, and layouts with our intuitive drag-and-drop editor.',
+      title: "Easy Customization",
+      description:
+        "Customize colors, fonts, and layouts with our intuitive drag-and-drop editor.",
     },
     {
       icon: <Download className="w-6 h-6" />,
-      title: 'Instant Download',
-      description: 'Download your resume in high-quality PDF format instantly and for free.',
+      title: "Instant Download",
+      description:
+        "Download your resume in high-quality PDF format instantly and for free.",
     },
   ];
 
@@ -25,7 +28,8 @@ const Home = () => {
     <div
       className="min-h-screen"
       style={{
-        background: "linear-gradient(152deg, rgba(8,0,0,1) 0%, rgba(106,78,205,1) 67%, rgba(46,43,43,1) 100%)"
+        background:
+          "linear-gradient(152deg, rgba(8,0,0,1) 0%, rgba(106,78,205,1) 67%, rgba(46,43,43,1) 100%)",
       }}
     >
       <div className="container mx-auto px-4 py-16">
@@ -36,12 +40,14 @@ const Home = () => {
               <h1 className="mb-6 text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
                 Build Your Dream
                 <span className="mb-6 text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
-                  {' '}  Resume in Minutes
+                  {" "}
+                  Resume in Minutes
                 </span>
               </h1>
               <p className="mb-8 text-lg leading-relaxed text-white text-opacity-50 sm:text-xl">
-                Build a professional resume in minutes with our easy-to-use templates. 
-                Stand out from the competition with designs that get you noticed.
+                Build a professional resume in minutes with our easy-to-use
+                templates. Stand out from the competition with designs that get
+                you noticed.
               </p>
               <div className="flex flex-col gap-4 justify-center sm:flex-row">
                 <Link
@@ -61,10 +67,11 @@ const Home = () => {
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
             <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl">
-              Why Choose Cwix?
+              Why Choose This App?
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-white text-opacity-50">
-              We've made resume building simple, fast, and professional. Here's what makes us different.
+              We've made resume building simple, fast, and professional. Here's
+              what makes us different.
             </p>
           </div>
 

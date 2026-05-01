@@ -1,18 +1,29 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, User, AlertCircle, CheckCircle } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  User,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    name: '',
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
   });
 
   const { signup, signin } = useAuth();
@@ -31,22 +42,25 @@ const Login = () => {
         });
 
         if (result.success) {
-          setMessage({ type: 'success', text: result.message });
+          setMessage({ type: "success", text: result.message });
           setTimeout(() => {
-            navigate('/templates');
+            navigate("/templates");
           }, 1500);
         } else {
-          setMessage({ type: 'error', text: result.message });
+          setMessage({ type: "error", text: result.message });
         }
       } else {
         // Signup validation
         if (formData.password.length < 6) {
-          setMessage({ type: 'error', text: 'Password must be at least 6 characters long.' });
+          setMessage({
+            type: "error",
+            text: "Password must be at least 6 characters long.",
+          });
           setIsLoading(false);
           return;
         }
         if (formData.password !== formData.confirmPassword) {
-          setMessage({ type: 'error', text: 'Passwords do not match' });
+          setMessage({ type: "error", text: "Passwords do not match" });
           setIsLoading(false);
           return;
         }
@@ -58,17 +72,25 @@ const Login = () => {
         });
 
         if (result.success) {
-          setMessage({ type: 'success', text: result.message + ' Please sign in.' });
+          setMessage({
+            type: "success",
+            text: result.message + " Please sign in.",
+          });
           setTimeout(() => {
             setIsLogin(true);
-            setFormData({ email: formData.email, password: '', confirmPassword: '', name: '' });
+            setFormData({
+              email: formData.email,
+              password: "",
+              confirmPassword: "",
+              name: "",
+            });
           }, 2000);
         } else {
-          setMessage({ type: 'error', text: result.message });
+          setMessage({ type: "error", text: result.message });
         }
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'An unexpected error occurred' });
+      setMessage({ type: "error", text: "An unexpected error occurred" });
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +110,7 @@ const Login = () => {
       className="min-h-screen py-12 flex items-center justify-center"
       style={{
         background:
-          'linear-gradient(152deg, rgba(8,0,0,1) 0%, rgba(106,78,205,1) 67%, rgba(46,43,43,1) 100%)',
+          "linear-gradient(152deg, rgba(8,0,0,1) 0%, rgba(106,78,205,1) 67%, rgba(46,43,43,1) 100%)",
       }}
     >
       <div className="max-w-md w-full mx-4">
@@ -96,22 +118,25 @@ const Login = () => {
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6 text-white text-center">
             <h1 className="text-2xl font-bold">
-              {isLogin ? 'Welcome Back' : 'Join Cwix'}
+              {isLogin ? "Welcome Back" : "Join Cv-Maker"}
             </h1>
             <p className="text-blue-100 mt-2">
               {isLogin
-                ? 'Sign in to access your resumes'
-                : 'Create your account to get started'}
+                ? "Sign in to access your resumes"
+                : "Create your account to get started"}
             </p>
           </div>
 
           {/* Message Display */}
           {message && (
-            <div className={`mx-8 mt-6 p-4 rounded-lg flex items-center space-x-2 ${message.type === 'success'
-                ? 'bg-green-50 text-green-800 border border-green-200'
-                : 'bg-red-50 text-red-800 border border-red-200'
-              }`}>
-              {message.type === 'success' ? (
+            <div
+              className={`mx-8 mt-6 p-4 rounded-lg flex items-center space-x-2 ${
+                message.type === "success"
+                  ? "bg-green-50 text-green-800 border border-green-200"
+                  : "bg-red-50 text-red-800 border border-red-200"
+              }`}
+            >
+              {message.type === "success" ? (
                 <CheckCircle className="h-5 w-5" />
               ) : (
                 <AlertCircle className="h-5 w-5" />
@@ -170,7 +195,7 @@ const Login = () => {
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
@@ -202,7 +227,7 @@ const Login = () => {
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <input
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
@@ -245,10 +270,14 @@ const Login = () => {
                 {isLoading ? (
                   <div className="flex items-center justify-center space-x-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    <span>{isLogin ? 'Signing In...' : 'Creating Account...'}</span>
+                    <span>
+                      {isLogin ? "Signing In..." : "Creating Account..."}
+                    </span>
                   </div>
+                ) : isLogin ? (
+                  "Sign In"
                 ) : (
-                  isLogin ? 'Sign In' : 'Create Account'
+                  "Create Account"
                 )}
               </button>
             </form>
@@ -258,18 +287,23 @@ const Login = () => {
               <p className="text-gray-600">
                 {isLogin
                   ? "Don't have an account?"
-                  : 'Already have an account?'}
+                  : "Already have an account?"}
                 <button
                   type="button"
                   onClick={() => {
                     setIsLogin(!isLogin);
                     setMessage(null);
-                    setFormData({ email: '', password: '', confirmPassword: '', name: '' });
+                    setFormData({
+                      email: "",
+                      password: "",
+                      confirmPassword: "",
+                      name: "",
+                    });
                   }}
                   className="ml-1 text-blue-600 hover:text-blue-800 font-medium transition-colors"
                   disabled={isLoading}
                 >
-                  {isLogin ? 'Sign up' : 'Sign in'}
+                  {isLogin ? "Sign up" : "Sign in"}
                 </button>
               </p>
             </div>
