@@ -1,17 +1,14 @@
 const Project = require("../models/Project");
+const {
+  createOne,
+  getAll,
+  getOne,
+  updateOne,
+  deleteOne,
+} = require("./crudController");
 
-exports.getProjects = async (req, res) => {
-  try {
-    const projects = await Project.find();
-
-    res.json({
-      success: true,
-      projects,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
-};
+exports.createProject = createOne(Project);
+exports.getProjects = getAll(Project, ["resume"]);
+exports.getProjectById = getOne(Project, ["resume"]);
+exports.updateProject = updateOne(Project);
+exports.deleteProject = deleteOne(Project);

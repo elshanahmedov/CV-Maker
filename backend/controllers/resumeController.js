@@ -1,105 +1,96 @@
 const Resume = require("../models/Resume");
-const PersonalInfo = require("../models/PersonalInfo");
 const Education = require("../models/Education");
-const Experience = require("../models/Experience");
+const WorkExperience = require("../models/WorkExperience");
 const Skill = require("../models/Skill");
-const ResumeProject = require("../models/ResumeProject");
+const Project = require("../models/Project");
 const Language = require("../models/Language");
 const Certification = require("../models/Certification");
+const SocialLink = require("../models/SocialLink");
+const ResumeView = require("../models/ResumeView");
+const AuditLog = require("../models/AuditLog");
 
 const populateResume = (query) => {
   return query
     .populate("user")
-    .populate("personalInfo")
+    .populate("template")
     .populate("education")
-    .populate("experience")
+    .populate("workExperience")
     .populate("skills")
     .populate("projects")
     .populate("languages")
-    .populate("certifications");
+    .populate("certifications")
+    .populate("socialLinks");
 };
 
 exports.createResume = async (req, res) => {
   try {
     const {
       user,
-      title,
       template,
+      title,
       personalInfo,
       education = [],
-      experience = [],
+      workExperience = [],
       skills = [],
       projects = [],
       languages = [],
       certifications = [],
+      socialLinks = [],
+      isPublic,
     } = req.body;
 
     const resume = await Resume.create({
-      user: user || undefined,
-      title,
+      user,
       template,
+      title,
+      personalInfo,
+      isPublic,
     });
 
-    let personalInfoDoc = null;
-
-    if (personalInfo) {
-      personalInfoDoc = await PersonalInfo.create({
-        ...personalInfo,
-        resume: resume._id,
-      });
-    }
-
     const educationDocs = await Education.insertMany(
-      education.map((item) => ({
-        ...item,
-        resume: resume._id,
-      })),
+      education.map((item) => ({ ...item, resume: resume._id })),
     );
 
-    const experienceDocs = await Experience.insertMany(
-      experience.map((item) => ({
-        ...item,
-        resume: resume._id,
-      })),
+    const workExperienceDocs = await WorkExperience.insertMany(
+      workExperience.map((item) => ({ ...item, resume: resume._id })),
     );
 
     const skillDocs = await Skill.insertMany(
-      skills.map((item) => ({
-        ...item,
-        resume: resume._id,
-      })),
+      skills.map((item) => ({ ...item, resume: resume._id })),
     );
 
-    const projectDocs = await ResumeProject.insertMany(
-      projects.map((item) => ({
-        ...item,
-        resume: resume._id,
-      })),
+    const projectDocs = await Project.insertMany(
+      projects.map((item) => ({ ...item, resume: resume._id })),
     );
 
     const languageDocs = await Language.insertMany(
-      languages.map((item) => ({
-        ...item,
-        resume: resume._id,
-      })),
+      languages.map((item) => ({ ...item, resume: resume._id })),
     );
 
     const certificationDocs = await Certification.insertMany(
-      certifications.map((item) => ({
-        ...item,
-        resume: resume._id,
-      })),
+      certifications.map((item) => ({ ...item, resume: resume._id })),
     );
 
-    resume.personalInfo = personalInfoDoc?._id;
+    const socialLinkDocs = await SocialLink.insertMany(
+      socialLinks.map((item) => ({ ...item, resume: resume._id })),
+    );
+
     resume.education = educationDocs.map((doc) => doc._id);
-    resume.experience = experienceDocs.map((doc) => doc._id);
+    resume.workExperience = workExperienceDocs.map((doc) => doc._id);
     resume.skills = skillDocs.map((doc) => doc._id);
     resume.projects = projectDocs.map((doc) => doc._id);
     resume.languages = languageDocs.map((doc) => doc._id);
     resume.certifications = certificationDocs.map((doc) => doc._id);
+    resume.socialLinks = socialLinkDocs.map((doc) => doc._id);
 
     await resume.save();
+
+    await AuditLog.create({
+      user,
+      resume: resume._id,
+      action: "CREATE_RESUME",
+      description: "Resume created",
+    });
 
     const populatedResume = await populateResume(Resume.findById(resume._id));
 
@@ -144,6 +135,20 @@ exports.getResumeById = async (req, res) => {
       });
     }
 
+    await ResumeView.create({
+      resume: resume._id,
+      viewedBy: req.body.viewedBy || null,
+      ipAddress: req.ip,
+      userAgent: req.headers["user-agent"],
+    });
+
+    await AuditLog.create({
+      user: resume.user,
+      resume: resume._id,
+      action: "VIEW_RESUME",
+      description: "Resume viewed",
+    });
+
     res.status(200).json({
       success: true,
       resume,
@@ -168,81 +173,52 @@ exports.updateResume = async (req, res) => {
     }
 
     const {
-      user,
-      title,
       template,
+      title,
       personalInfo,
       education,
-      experience,
+      workExperience,
       skills,
       projects,
       languages,
       certifications,
+      socialLinks,
+      isPublic,
     } = req.body;
 
-    resume.user = user || resume.user;
-    resume.title = title || resume.title;
-    resume.template = template || resume.template;
-
-    if (personalInfo) {
-      if (resume.personalInfo) {
-        await PersonalInfo.findByIdAndUpdate(
-          resume.personalInfo,
-          personalInfo,
-          {
-            new: true,
-            runValidators: true,
-          },
-        );
-      } else {
-        const personalInfoDoc = await PersonalInfo.create({
-          ...personalInfo,
-          resume: resume._id,
-        });
-        resume.personalInfo = personalInfoDoc._id;
-      }
-    }
+    if (template !== undefined) resume.template = template;
+    if (title !== undefined) resume.title = title;
+    if (personalInfo !== undefined) resume.personalInfo = personalInfo;
+    if (isPublic !== undefined) resume.isPublic = isPublic;
 
     if (education) {
       await Education.deleteMany({ resume: resume._id });
       const docs = await Education.insertMany(
-        education.map((item) => ({
-          ...item,
-          resume: resume._id,
-        })),
+        education.map((item) => ({ ...item, resume: resume._id })),
       );
       resume.education = docs.map((doc) => doc._id);
     }
 
-    if (experience) {
-      await Experience.deleteMany({ resume: resume._id });
-      const docs = await Experience.insertMany(
-        experience.map((item) => ({
-          ...item,
-          resume: resume._id,
-        })),
+    if (workExperience) {
+      await WorkExperience.deleteMany({ resume: resume._id });
+      const docs = await WorkExperience.insertMany(
+        workExperience.map((item) => ({ ...item, resume: resume._id })),
       );
-      resume.experience = docs.map((doc) => doc._id);
+      resume.workExperience = docs.map((doc) => doc._id);
     }
 
     if (skills) {
       await Skill.deleteMany({ resume: resume._id });
       const docs = await Skill.insertMany(
-        skills.map((item) => ({
-          ...item,
-          resume: resume._id,
-        })),
+        skills.map((item) => ({ ...item, resume: resume._id })),
       );
       resume.skills = docs.map((doc) => doc._id);
     }
 
     if (projects) {
-      await ResumeProject.deleteMany({ resume: resume._id });
-      const docs = await ResumeProject.insertMany(
-        projects.map((item) => ({
-          ...item,
-          resume: resume._id,
-        })),
+      await Project.deleteMany({ resume: resume._id });
+      const docs = await Project.insertMany(
+        projects.map((item) => ({ ...item, resume: resume._id })),
       );
       resume.projects = docs.map((doc) => doc._id);
     }
@@ -250,10 +226,7 @@ exports.updateResume = async (req, res) => {
     if (languages) {
       await Language.deleteMany({ resume: resume._id });
       const docs = await Language.insertMany(
-        languages.map((item) => ({
-          ...item,
-          resume: resume._id,
-        })),
+        languages.map((item) => ({ ...item, resume: resume._id })),
       );
       resume.languages = docs.map((doc) => doc._id);
     }
@@ -261,15 +234,27 @@ exports.updateResume = async (req, res) => {
     if (certifications) {
       await Certification.deleteMany({ resume: resume._id });
       const docs = await Certification.insertMany(
-        certifications.map((item) => ({
-          ...item,
-          resume: resume._id,
-        })),
+        certifications.map((item) => ({ ...item, resume: resume._id })),
       );
       resume.certifications = docs.map((doc) => doc._id);
     }
 
+    if (socialLinks) {
+      await SocialLink.deleteMany({ resume: resume._id });
+      const docs = await SocialLink.insertMany(
+        socialLinks.map((item) => ({ ...item, resume: resume._id })),
+      );
+      resume.socialLinks = docs.map((doc) => doc._id);
+    }
+
     await resume.save();
+
+    await AuditLog.create({
+      user: resume.user,
+      resume: resume._id,
+      action: "UPDATE_RESUME",
+      description: "Resume updated",
+    });
 
     const populatedResume = await populateResume(Resume.findById(resume._id));
 
@@ -297,13 +282,22 @@ exports.deleteResume = async (req, res) => {
       });
     }
 
-    await PersonalInfo.deleteMany({ resume: resume._id });
     await Education.deleteMany({ resume: resume._id });
-    await Experience.deleteMany({ resume: resume._id });
+    await WorkExperience.deleteMany({ resume: resume._id });
     await Skill.deleteMany({ resume: resume._id });
-    await ResumeProject.deleteMany({ resume: resume._id });
+    await Project.deleteMany({ resume: resume._id });
     await Language.deleteMany({ resume: resume._id });
     await Certification.deleteMany({ resume: resume._id });
+    await SocialLink.deleteMany({ resume: resume._id });
+    await ResumeView.deleteMany({ resume: resume._id });
+
+    await AuditLog.create({
+      user: resume.user,
+      resume: resume._id,
+      action: "DELETE_RESUME",
+      description: "Resume deleted",
+    });
+
     await Resume.findByIdAndDelete(resume._id);
 
     res.status(200).json({

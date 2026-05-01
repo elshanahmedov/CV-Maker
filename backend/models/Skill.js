@@ -7,8 +7,18 @@ const skillSchema = new mongoose.Schema(
       ref: "Resume",
       required: true,
     },
-    name: String,
-    level: String,
+
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    level: {
+      type: String,
+      enum: ["beginner", "intermediate", "advanced", "expert"],
+      default: "intermediate",
+    },
   },
   { timestamps: true },
 );

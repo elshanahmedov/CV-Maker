@@ -1,24 +1,27 @@
 const mongoose = require("mongoose");
 
-const experienceSchema = new mongoose.Schema(
+const workExperienceSchema = new mongoose.Schema(
   {
     resume: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Resume",
       required: true,
     },
+
     company: String,
     position: String,
     location: String,
     startDate: String,
     endDate: String,
-    current: {
+
+    currentlyWorking: {
       type: Boolean,
       default: false,
     },
+
     description: String,
   },
   { timestamps: true },
 );
 
-module.exports = mongoose.model("Experience", experienceSchema);
+module.exports = mongoose.model("WorkExperience", workExperienceSchema);

@@ -5,22 +5,32 @@ const resumeSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+
+    template: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Template",
       required: false,
     },
 
     title: {
       type: String,
       default: "Untitled Resume",
-    },
-
-    template: {
-      type: String,
-      default: "default",
+      trim: true,
     },
 
     personalInfo: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "PersonalInfo",
+      fullName: String,
+      jobTitle: String,
+      email: String,
+      phone: String,
+      location: String,
+      website: String,
+      linkedin: String,
+      github: String,
+      summary: String,
+      photoUrl: String,
     },
 
     education: [
@@ -30,10 +40,10 @@ const resumeSchema = new mongoose.Schema(
       },
     ],
 
-    experience: [
+    workExperience: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Experience",
+        ref: "WorkExperience",
       },
     ],
 
@@ -47,7 +57,7 @@ const resumeSchema = new mongoose.Schema(
     projects: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "ResumeProject",
+        ref: "Project",
       },
     ],
 
@@ -64,6 +74,18 @@ const resumeSchema = new mongoose.Schema(
         ref: "Certification",
       },
     ],
+
+    socialLinks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SocialLink",
+      },
+    ],
+
+    isPublic: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

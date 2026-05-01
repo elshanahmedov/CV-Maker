@@ -5,8 +5,17 @@ const path = require("path");
 const connectDB = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
 const textEnhancerRoutes = require("./routes/textEnhancerRoutes");
-const projectRoutes = require("./routes/projectRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
+const templateRoutes = require("./routes/templateRoutes");
+const educationRoutes = require("./routes/educationRoutes");
+const workExperienceRoutes = require("./routes/workExperienceRoutes");
+const skillRoutes = require("./routes/skillRoutes");
+const projectRoutes = require("./routes/projectRoutes");
+const languageRoutes = require("./routes/languageRoutes");
+const certificationRoutes = require("./routes/certificationRoutes");
+const socialLinkRoutes = require("./routes/socialLinkRoutes");
+const resumeViewRoutes = require("./routes/resumeViewRoutes");
+const auditLogRoutes = require("./routes/auditLogRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -33,9 +42,19 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/resumes", resumeRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/text-enhancer", textEnhancerRoutes);
+app.use("/api/resumes", resumeRoutes);
+app.use("/api/templates", templateRoutes);
+app.use("/api/educations", educationRoutes);
+app.use("/api/work-experiences", workExperienceRoutes);
+app.use("/api/skills", skillRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/languages", languageRoutes);
+app.use("/api/certifications", certificationRoutes);
+app.use("/api/social-links", socialLinkRoutes);
+app.use("/api/resume-views", resumeViewRoutes);
+app.use("/api/audit-logs", auditLogRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ message: "Server is running!", success: true });

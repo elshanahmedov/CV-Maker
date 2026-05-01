@@ -7,6 +7,7 @@ const educationSchema = new mongoose.Schema(
       ref: "Resume",
       required: true,
     },
+
     school: String,
     degree: String,
     fieldOfStudy: String,

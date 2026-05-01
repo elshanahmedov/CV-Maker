@@ -9,10 +9,8 @@ const {
   deleteResume,
 } = require("../controllers/resumeController");
 
-router.post("/", createResume);
-router.get("/", getResumes);
-router.get("/:id", getResumeById);
-router.put("/:id", updateResume);
-router.delete("/:id", deleteResume);
+router.route("/").post(createResume).get(getResumes);
+
+router.route("/:id").get(getResumeById).put(updateResume).delete(deleteResume);
 
 module.exports = router;

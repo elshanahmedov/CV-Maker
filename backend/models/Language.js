@@ -7,8 +7,18 @@ const languageSchema = new mongoose.Schema(
       ref: "Resume",
       required: true,
     },
-    name: String,
-    level: String,
+
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    level: {
+      type: String,
+      enum: ["basic", "intermediate", "advanced", "native"],
+      default: "intermediate",
+    },
   },
   { timestamps: true },
 );
